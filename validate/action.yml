@@ -1,0 +1,44 @@
+#
+# Copyright (C) 2020-2026 Arm Limited or its affiliates and Contributors. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+name: docs-action-validate
+description: GitHub Action for validating Arm documentation sites
+inputs:
+  docs-root:
+    description: Docs root inside the repository. Markdown content lives directly
+      under this directory; static/ and docs-config.json are treated specially.
+    required: true
+  site-id:
+    description: Explicit site ID for the docs site.
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Set up Node
+      uses: actions/setup-node@v6.4.0
+      with:
+        node-version: 24
+
+    - name: Install arm-docs
+      shell: bash
+      run: |
+        echo "deb [trusted=yes] https://artifacts.tools.arm.com/tools-deb bionic main" | sudo tee -a /etc/apt/sources.list.d/artifactory.list
+        sudo apt-get update
+        sudo apt install -y arm-docs-github-action
+        sudo rm /etc/apt/sources.list.d/artifactory.list
+        sudo apt-get clean
+
+    - name: Run arm-docs validate
+      shell: bash
+      env:
+        INPUT_DOCS_ROOT: ${{ inputs.docs-root }}
+        INPUT_SITE_ID: ${{ inputs.site-id }}
+      run: |
+        command=(arm-docs validate --docs-root "$INPUT_DOCS_ROOT")
+
+        command+=(--site-id "$INPUT_SITE_ID")
+
+        echo "Running command: ${command[*]}" | tee -a "$GITHUB_STEP_SUMMARY"
+
+        "${command[@]}"

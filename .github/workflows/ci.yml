@@ -1,0 +1,76 @@
+#
+# Copyright (C) 2020-2026 Arm Limited or its affiliates and Contributors. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+name: CI
+
+concurrency:
+  group: ${{ github.repository }}-${{ github.workflow }}-${{ inputs.branch || github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches: [ main ]
+    tags-ignore:
+      - '**'
+  pull_request:
+    branches: [ main ]
+
+env:
+  python_version: '3.11'
+
+jobs:
+  assert-news:
+    name: Assert news files (See CONTRIBUTING.md)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.python_version }}
+      - uses: FranzDiebold/github-env-vars-action@v2
+      - name: Install CI/CD tools
+        run: pip install continuous-delivery-scripts && pip list
+      - name: Assert news
+        run: cd-assert-news -b ${CI_ACTION_REF_NAME}
+        env:
+          GIT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Report failure if needed
+        if: ${{ failure() }}
+        run: |
+          echo "::error:: News file missing (See CONTRIBUTING.md guide for details)."
+
+  arm-docs-package:
+    name: Check arm-docs package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install arm-docs package
+        run: |
+          echo "deb [trusted=yes] https://artifacts.tools.arm.com/tools-deb bionic main" | sudo tee -a /etc/apt/sources.list.d/artifactory.list
+          sudo apt-get update
+          sudo apt install -y arm-docs-github-action
+          sudo rm /etc/apt/sources.list.d/artifactory.list
+          sudo apt-get clean
+
+      - name: Check arm-docs help
+        run: arm-docs --help
+
+      - name: Check publish help
+        run: arm-docs publish --help
+
+      - name: Check validate help
+        run: arm-docs validate --help
+
+  action-files:
+    name: Check action files exist
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Check validate action metadata exists
+        run: test -f validate/action.yml
+
+      - name: Check publish action metadata exists
+        run: test -f publish/action.yml

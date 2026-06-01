@@ -1,0 +1,87 @@
+#
+# Copyright (C) 2020-2026 Arm Limited or its affiliates and Contributors. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+[ProjectConfig]
+# Only path variables can and must contain 'DIR', 'PATH' or 'ROOT' in their name as
+# these tokens are used to identify path variables from other variable types.
+PROJECT_NAME = "GitHub Actions for validating and publishing Arm documentation sites"
+PACKAGE_NAME = "arm-docs-github-action"
+PROJECT_UUID = "d58edc9d-c2a6-4be4-9857-4ed3f84c683b"
+PROJECT_ROOT = "."
+NEWS_DIR = "changes/"
+SOURCE_DIR = "action"
+TAG_VERSION_SHORTCUTS = true
+TAG_LATEST = true
+RELEASE_BRANCH_PATTERN = "^v.*$"
+MODULE_TO_DOCUMENT = "action"
+DOCUMENTATION_DEFAULT_OUTPUT_PATH = "./docs"
+DOCUMENTATION_PRODUCTION_OUTPUT_PATH = "./docs"
+VERSION_FILE_PATH = "version.properties"
+CHANGELOG_FILE_PATH = "CHANGELOG.md"
+AWS_BUCKET=""
+PROGRAMMING_LANGUAGE = "github_actions"
+MASTER_BRANCH = "main"
+
+[AutoVersionConfig]
+CONFIG_NAME = "JAVA"
+PRERELEASE_TOKEN = "beta"
+BUILD_TOKEN = "dev"
+TAG_TEMPLATE = "{version}"
+targets = [ "version.properties",]
+
+[AutoVersionConfig.key_aliases]
+Version = "VERSION_KEY"
+MajorVersion = "major"
+MinorVersion = "minor"
+PatchVersion = "patch"
+CommitHash = "COMMIT"
+
+[AutoVersionConfig.trigger_patterns]
+major = "changes/*.major"
+minor = "changes/*.feature"
+patch = "changes/*.bugfix"
+
+[tool.towncrier]
+directory = "changes"
+filename = "CHANGELOG.md"
+package = "arm-docs-github-action"
+title_format = "{version} ({project_date})"
+start_string = """
+[//]: # (begin_release_notes)
+"""
+
+[[tool.towncrier.type]]
+directory = "major"
+name = "Major changes"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "feature"
+name = "Features"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "bugfix"
+name = "Bugfixes"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "doc"
+name = "Improved Documentation"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "removal"
+name = "Deprecations and Removals"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "misc"
+name = "Misc"
+showcontent = false
+
+[spdx]
+CreatorWebsite = "spdx.org"
+PathToSpdx = "spdx/spdxdocs"
+UUID="e663d1c4-9365-43af-bd9b-c416cda71360"
