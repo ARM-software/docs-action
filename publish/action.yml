@@ -25,10 +25,14 @@ runs:
 
     - name: Install arm-docs
       shell: bash
+      env:
+        ARM_DOCS_PACKAGE_VERSION: ""
       run: |
+        echo "::notice::arm-docs-github-action version $ARM_DOCS_PACKAGE_VERSION."
+
         echo "deb [trusted=yes] https://artifacts.tools.arm.com/tools-deb bionic main" | sudo tee -a /etc/apt/sources.list.d/artifactory.list
         sudo apt-get update
-        sudo apt install -y arm-docs-github-action
+        sudo apt install -y "arm-docs-github-action=$ARM_DOCS_PACKAGE_VERSION"
         sudo rm /etc/apt/sources.list.d/artifactory.list
         sudo apt-get clean
 

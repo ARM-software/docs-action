@@ -19,6 +19,7 @@ on:
 
 env:
   python_version: "3.11"
+  arm_docs_package_version: ""
 
 jobs:
   assert-news:
@@ -43,15 +44,45 @@ jobs:
         run: |
           echo "::error:: News file missing (See CONTRIBUTING.md guide for details)."
 
+  assert-package-version-pins:
+    name: Assert package version pins
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Check pinned package version values are set
+        shell: bash
+        run: |
+          if ! grep -Eq '^[[:space:]]*ARM_DOCS_PACKAGE_VERSION: "[^"]+"$' publish/action.yml; then
+            echo "::error:: publish/action.yml must set ARM_DOCS_PACKAGE_VERSION to a specific package version."
+            exit 1
+          fi
+
+          if ! grep -Eq '^[[:space:]]*ARM_DOCS_PACKAGE_VERSION: "[^"]+"$' validate/action.yml; then
+            echo "::error:: validate/action.yml must set ARM_DOCS_PACKAGE_VERSION to a specific package version."
+            exit 1
+          fi
+
+          if ! grep -Eq '^[[:space:]]*arm_docs_package_version: "[^"]+"$' .github/workflows/ci.yml; then
+            echo "::error:: .github/workflows/ci.yml must set arm_docs_package_version to a specific package version."
+            exit 1
+          fi
+
   arm-docs-package:
     name: Check arm-docs package
     runs-on: ubuntu-latest
+    needs:
+      - assert-package-version-pins
     steps:
       - name: Install arm-docs package
+        env:
+          ARM_DOCS_PACKAGE_VERSION: ${{ env.arm_docs_package_version }}
         run: |
+          echo "::notice::arm-docs-github-action version $ARM_DOCS_PACKAGE_VERSION."
+
           echo "deb [trusted=yes] https://artifacts.tools.arm.com/tools-deb bionic main" | sudo tee -a /etc/apt/sources.list.d/artifactory.list
           sudo apt-get update
-          sudo apt install -y arm-docs-github-action
+          sudo apt install -y "arm-docs-github-action=$ARM_DOCS_PACKAGE_VERSION"
           sudo rm /etc/apt/sources.list.d/artifactory.list
           sudo apt-get clean
 

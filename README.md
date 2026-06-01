@@ -127,3 +127,8 @@ If your repository is docs-only, `docs-root` can be `.` instead of `docs`.
 - `docs-root`: Docs root inside the repository.
 - `site-id`: Explicit site ID for the docs site.
 - `environment`: Deployment environment. Accepted values are `staging` and `production`.
+
+## Package Version
+
+- The installed Debian package version is controlled by maintainer-edited variables in `publish/action.yml`, `validate/action.yml`, and `.github/workflows/ci.yml`.
+- CI checks that all of those pinned version values are set before the package install job runs.
