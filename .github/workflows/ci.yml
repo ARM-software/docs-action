@@ -19,7 +19,7 @@ on:
 
 env:
   python_version: "3.11"
-  arm_docs_package_version: ""
+  arm_docs_package_version: "0.4.1"
 
 jobs:
   assert-news:
