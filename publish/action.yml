@@ -25,9 +25,9 @@ runs:
 
     - name: Install arm-docs
       shell: bash
-      env:
-        ARM_DOCS_PACKAGE_VERSION: "0.4.1"
       run: |
+        ARM_DOCS_PACKAGE_VERSION="$(tr -d '[:space:]' < "$GITHUB_ACTION_PATH/../arm-docs-github-action-package-version.txt")"
+
         echo "::notice::arm-docs-github-action version $ARM_DOCS_PACKAGE_VERSION."
 
         echo "deb [trusted=yes] https://artifacts.tools.arm.com/tools-deb bionic main" | sudo tee -a /etc/apt/sources.list.d/artifactory.list

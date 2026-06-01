@@ -130,5 +130,6 @@ If your repository is docs-only, `docs-root` can be `.` instead of `docs`.
 
 ## Package Version
 
-- The installed Debian package version is controlled by maintainer-edited variables in `publish/action.yml`, `validate/action.yml`, and `.github/workflows/ci.yml`.
-- CI checks that all of those pinned version values are set before the package install job runs.
+- The installed Debian package version is controlled by `arm-docs-github-action-package-version.txt`.
+- That file is intentionally named after the underlying Debian package so it is clearly distinct from this shim action's own version.
+- CI checks that this underlying tool package version file is set before the package install job runs.

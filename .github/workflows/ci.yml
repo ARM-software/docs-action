@@ -19,7 +19,6 @@ on:
 
 env:
   python_version: "3.11"
-  arm_docs_package_version: "0.4.1"
 
 jobs:
   assert-news:
@@ -44,27 +43,24 @@ jobs:
         run: |
           echo "::error:: News file missing (See CONTRIBUTING.md guide for details)."
 
-  assert-package-version-pins:
-    name: Assert package version pins
+  assert-package-version-pin-file:
+    name: Assert package version pin file
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
 
-      - name: Check pinned package version values are set
+      - name: Check underlying tool package version file is set
         shell: bash
         run: |
-          if ! grep -Eq '^[[:space:]]*ARM_DOCS_PACKAGE_VERSION: "[^"]+"$' publish/action.yml; then
-            echo "::error:: publish/action.yml must set ARM_DOCS_PACKAGE_VERSION to a specific package version."
+          if [[ ! -f arm-docs-github-action-package-version.txt ]]; then
+            echo "::error:: arm-docs-github-action-package-version.txt must exist."
             exit 1
           fi
 
-          if ! grep -Eq '^[[:space:]]*ARM_DOCS_PACKAGE_VERSION: "[^"]+"$' validate/action.yml; then
-            echo "::error:: validate/action.yml must set ARM_DOCS_PACKAGE_VERSION to a specific package version."
-            exit 1
-          fi
+          arm_docs_package_version="$(tr -d '[:space:]' < arm-docs-github-action-package-version.txt)"
 
-          if ! grep -Eq '^[[:space:]]*arm_docs_package_version: "[^"]+"$' .github/workflows/ci.yml; then
-            echo "::error:: .github/workflows/ci.yml must set arm_docs_package_version to a specific package version."
+          if [[ -z "$arm_docs_package_version" ]]; then
+            echo "::error:: arm-docs-github-action-package-version.txt must set a specific package version."
             exit 1
           fi
 
@@ -72,12 +68,14 @@ jobs:
     name: Check arm-docs package
     runs-on: ubuntu-latest
     needs:
-      - assert-package-version-pins
+      - assert-package-version-pin-file
     steps:
+      - uses: actions/checkout@v6
+
       - name: Install arm-docs package
-        env:
-          ARM_DOCS_PACKAGE_VERSION: ${{ env.arm_docs_package_version }}
         run: |
+          ARM_DOCS_PACKAGE_VERSION="$(tr -d '[:space:]' < arm-docs-github-action-package-version.txt)"
+
           echo "::notice::arm-docs-github-action version $ARM_DOCS_PACKAGE_VERSION."
 
           echo "deb [trusted=yes] https://artifacts.tools.arm.com/tools-deb bionic main" | sudo tee -a /etc/apt/sources.list.d/artifactory.list
