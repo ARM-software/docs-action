@@ -5,19 +5,20 @@
 name: CI
 
 concurrency:
-  group: ${{ github.repository }}-${{ github.workflow }}-${{ inputs.branch || github.head_ref || github.ref }}
+  group: ${{ github.repository }}-${{ github.workflow }}-${{ inputs.branch ||
+    github.head_ref || github.ref }}
   cancel-in-progress: true
 
 on:
   push:
     branches: [ main ]
     tags-ignore:
-      - '**'
+      - "**"
   pull_request:
     branches: [ main ]
 
 env:
-  python_version: '3.11'
+  python_version: "3.11"
 
 jobs:
   assert-news:
@@ -36,7 +37,7 @@ jobs:
       - name: Assert news
         run: cd-assert-news -b ${CI_ACTION_REF_NAME}
         env:
-          GIT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GIT_TOKEN: ${{ secrets.ARM_SOFTWARE_TOKEN }}
       - name: Report failure if needed
         if: ${{ failure() }}
         run: |
