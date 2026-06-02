@@ -25,7 +25,7 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: ${{ env.python_version }}
-      - uses: FranzDiebold/github-env-vars-action@v2
+      - uses: FranzDiebold/github-env-vars-action@e8118971bd6b60524ae66a2d870bc83088e3a3c9 # v2.9.0
       - name: Install CI/CD tools
         run: pip install continuous-delivery-scripts>=2.7 && pip list
       - name: Tag and release
