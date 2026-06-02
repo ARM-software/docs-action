@@ -10,8 +10,6 @@ Each product team maintains its own documentation in its own repository and publ
 
 This GitHub action is the entry point for teams to publish their docs to a shared documentation portal under developer.arm.com in a way that is decentralised and easy to use.
 
-Please [read the documentation to get started](https://docs.devplatform.arm.com/docs-action/getting-started/).
-
 ## Usage
 
 Validate a docs site:
@@ -47,44 +45,6 @@ When you publish:
 
 - `site-id` becomes the route for your docs
 - the published site ends up at `<site-url>/<site-id>/`
-- the Terraform `paths` value should match `site-id`
-
-### Add the Terraform access
-
-Your GitHub workflow needs an AWS role that is allowed to upload only your docs route.
-
-Add a module like this in the Terraform repository that manages the docs platform:
-
-```hcl
-module "product_guides_upload_role" {
-  source = "../../../modules/reusable/docs-s3-upload-role"
-
-  github_repository = "your-org/your-docs-repo"
-  bucket_name       = module.ai_docs.bucket_name
-  paths             = ["product-guides"]
-
-  additional_policy_arns = [
-    module.ai_docs.cloudfront_cache_invalidation_role_arn,
-  ]
-}
-```
-
-What each field does:
-
-- `github_repository`: the only repository allowed to assume the role
-- `bucket_name`: the S3 bucket that stores published sites
-- `paths`: the docs routes this repository may publish to; this should usually contain exactly one value, and it should match `site-id`. These are the only paths this role will have access to publish
-- `additional_policy_arns`: optional extra permissions, such as CloudFront invalidation
-
-If you publish to both staging and production, add the equivalent module in both environments and apply Terraform in both places.
-
-The `role-to-assume` value in your publish workflow should be the AWS role ARN created by this Terraform.
-
-Terraform is managed in `https://github.com/Arm-Debug/edge-ai-infra-terraform`.
-
-Relevant PR: `https://github.com/Arm-Debug/edge-ai-infra-terraform/pull/176`
-
-For the focused Terraform walkthrough, see `https://docs.devplatform.arm.com/docs-action/deployment/terraform-access/`.
 
 ### Prepare the repository layout
 
