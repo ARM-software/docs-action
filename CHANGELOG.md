@@ -2,6 +2,19 @@
 Copyright (C) 2026-2026 Arm Limited or its affiliates and Contributors. All rights reserved.
 SPDX-License-Identifier: Apache-2.0
 -->
+"0.1.2" (2026-06-03)
+====================
+
+Bugfixes
+--------
+
+- :bug: Ensure action doesn't try to handle pnpm cache (#20260603151507)
+
+
+<!--
+Copyright (C) 2026-2026 Arm Limited or its affiliates and Contributors. All rights reserved.
+SPDX-License-Identifier: Apache-2.0
+-->
 "0.1.1" (2026-06-03)
 ====================
 
