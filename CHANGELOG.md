@@ -2,6 +2,19 @@
 Copyright (C) 2026-2026 Arm Limited or its affiliates and Contributors. All rights reserved.
 SPDX-License-Identifier: Apache-2.0
 -->
+"0.1.1" (2026-06-03)
+====================
+
+Bugfixes
+--------
+
+- :bug: Specify the pnpm version in pnpm/action-setup (#20260603150647)
+
+
+<!--
+Copyright (C) 2026-2026 Arm Limited or its affiliates and Contributors. All rights reserved.
+SPDX-License-Identifier: Apache-2.0
+-->
 "0.1.0" (2026-06-03)
 ====================
 
