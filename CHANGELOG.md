@@ -2,6 +2,19 @@
 Copyright (C) 2026-2026 Arm Limited or its affiliates and Contributors. All rights reserved.
 SPDX-License-Identifier: Apache-2.0
 -->
+"0.1.3" (2026-06-03)
+====================
+
+Bugfixes
+--------
+
+- :camel: Bump version of the underlying action (#20260603152515)
+
+
+<!--
+Copyright (C) 2026-2026 Arm Limited or its affiliates and Contributors. All rights reserved.
+SPDX-License-Identifier: Apache-2.0
+-->
 "0.1.2" (2026-06-03)
 ====================
 
