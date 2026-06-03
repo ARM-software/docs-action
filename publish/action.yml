@@ -53,7 +53,7 @@ runs:
             site_url="https://docs.staging.devplatform.arm.com"
             s3_bucket="arm-edge-ai-docs-staging-529607359382"
             cloudfront_distribution_id="E3668SHWG5R3NX"
-            analytics_url="" # No need for analytics in the staging environment
+            analytics_url="https://assets.adobedtm.com/268f09c22e73/c3400da3baca/launch-d106b1020c99-development.min.js"
             ;;
 
           production)
