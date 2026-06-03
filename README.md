@@ -10,4 +10,86 @@ Each product team maintains its own documentation in its own repository and publ
 
 This GitHub action is the entry point for teams to publish their docs to a shared documentation portal under developer.arm.com in a way that is decentralised and easy to use.
 
+## Usage
 
+Validate a docs site:
+
+```yaml
+- uses: ARM-Software/docs-action/validate@latest
+  with:
+    docs-root: docs
+    site-id: product-guides
+```
+
+Publish a docs site:
+
+```yaml
+- name: AWS GitHub OIDC Login
+  uses: aws-actions/configure-aws-credentials@v4
+  with:
+    role-to-assume: arn:aws:iam::<account-id>:role/<role-name>
+    aws-region: eu-west-1
+
+- uses: ARM-Software/docs-action/publish@latest
+  with:
+    docs-root: docs
+    site-id: product-guides
+    environment: staging
+```
+
+## Getting Started
+
+`arm-docs` expects a docs root containing Markdown or MDX content, plus optional `static/` assets and a `docs-config.json` file for site-level navigation and labelling.
+
+When you publish:
+
+- `site-id` becomes the route for your docs
+- the published site ends up at `<site-url>/<site-id>/`
+
+### Prepare the repository layout
+
+This is a simple repository layout when the docs root lives in `docs/`:
+
+```text
+your-docs-repo/
+├── .github/
+│   └── workflows/
+│       ├── validate-docs.yml
+│       └── publish-docs.yml
+└── docs/
+    ├── index.md
+    ├── getting-started/
+    │   └── install.md
+    ├── reference/
+    │   └── cli.md
+    ├── static/
+    │   └── img/
+    │       └── architecture.png
+    └── docs-config.json
+```
+
+The important rules are:
+
+- point `docs-root` at the docs root itself, not at the whole repository unless the docs live at repository root
+- place Markdown or MDX files directly in the docs root or its subdirectories
+- use `static/` for assets that should be copied into the built site as-is
+- include `docs-config.json` to define the site label and top-level navigation for the docs site
+
+If your repository is docs-only, `docs-root` can be `.` instead of `docs`.
+
+## Validate Inputs
+
+- `docs-root`: Docs root inside the repository.
+- `site-id`: Explicit site ID for the docs site.
+
+## Publish Inputs
+
+- `docs-root`: Docs root inside the repository.
+- `site-id`: Explicit site ID for the docs site.
+- `environment`: Deployment environment. Accepted values are `staging` and `production`.
+
+## Package Version
+
+- The installed Debian package version is controlled by `arm-docs-github-action-package-version.txt`.
+- That file is intentionally named after the underlying Debian package so it is clearly distinct from this shim action's own version.
+- CI checks that this underlying tool package version file is set before the package install job runs.

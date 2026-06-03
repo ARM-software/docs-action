@@ -1,0 +1,40 @@
+#
+# Copyright (C) 2020-2026 Arm Limited or its affiliates and Contributors. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+name: GitHub Release
+
+env:
+  python_version: "3.11"
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: "Enter type of release to perform (i.e. development, beta, release):"
+        required: true
+        type: choice
+        options:
+          - development
+          - beta
+          - release
+
+jobs:
+  release:
+    name: Carry out a release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.python_version }}
+      - uses: FranzDiebold/github-env-vars-action@e8118971bd6b60524ae66a2d870bc83088e3a3c9 # v2.9.0
+      - name: Install CI/CD tools
+        run: pip install 'continuous-delivery-scripts==2.7' && pip list
+      - name: Tag and release
+        run: cd-tag-and-release -b ${CI_ACTION_REF_NAME} -t ${{
+          github.event.inputs.release_type }} -vv
+        env:
+          GIT_TOKEN: ${{ secrets.ARM_SOFTWARE_TOKEN }}

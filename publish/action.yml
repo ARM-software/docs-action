@@ -1,0 +1,90 @@
+#
+# Copyright (C) 2020-2026 Arm Limited or its affiliates and Contributors. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+name: docs-action-publish
+description: GitHub Action for publishing Arm documentation sites
+inputs:
+  docs-root:
+    description: Docs root inside the repository. Markdown content lives directly
+      under this directory; static/ and docs-config.json are treated specially.
+    required: true
+  site-id:
+    description: Explicit site ID for the docs site.
+    required: true
+  environment:
+    description: Deployment environment. Accepted values are `staging` and `production`.
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Set up pnpm
+      uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
+
+    - name: Set up Node
+      uses: actions/setup-node@v6.4.0
+      with:
+        node-version: 24
+        cache: pnpm
+
+    - name: Install arm-docs
+      shell: bash
+      run: |
+        ARM_DOCS_PACKAGE_VERSION="$(tr -d '[:space:]' < "$GITHUB_ACTION_PATH/../arm-docs-github-action-package-version.txt")"
+
+        echo "::notice::arm-docs-github-action version $ARM_DOCS_PACKAGE_VERSION."
+
+        echo "deb [trusted=yes] https://artifacts.tools.arm.com/tools-deb bionic main" | sudo tee -a /etc/apt/sources.list.d/artifactory.list
+        sudo apt-get update
+        sudo apt install -y "arm-docs-github-action=$ARM_DOCS_PACKAGE_VERSION"
+        sudo rm /etc/apt/sources.list.d/artifactory.list
+        sudo apt-get clean
+
+    - name: Run arm-docs publish
+      shell: bash
+      env:
+        INPUT_DOCS_ROOT: ${{ inputs.docs-root }}
+        INPUT_SITE_ID: ${{ inputs.site-id }}
+        INPUT_ENVIRONMENT: ${{ inputs.environment }}
+      run: |
+        case "$INPUT_ENVIRONMENT" in
+          staging)
+            aws_region="eu-west-1"
+            site_url="https://docs.staging.devplatform.arm.com"
+            s3_bucket="arm-edge-ai-docs-staging-529607359382"
+            cloudfront_distribution_id="E3668SHWG5R3NX"
+            analytics_url="https://assets.adobedtm.com/268f09c22e73/c3400da3baca/launch-d106b1020c99-development.min.js"
+            ;;
+
+          production)
+            aws_region="eu-west-1"
+            site_url="https://docs.devplatform.arm.com"
+            s3_bucket="arm-edge-ai-docs-prod-930800959236"
+            cloudfront_distribution_id="EA346A6MHUY68"
+            analytics_url="https://assets.adobedtm.com/268f09c22e73/c3400da3baca/launch-d08a7f55e4e4.min.js"
+            ;;
+
+          *)
+            echo "::error::Unsupported environment '$INPUT_ENVIRONMENT'"
+            echo "::error::Expected one of: staging, production"
+            exit 1
+            ;;
+        esac
+
+        command=(arm-docs publish --docs-root "$INPUT_DOCS_ROOT")
+
+        command+=(--site-id "$INPUT_SITE_ID")
+        command+=(--aws-region "$aws_region")
+        command+=(--site-url "$site_url")
+        command+=(--s3-bucket "$s3_bucket")
+
+        command+=(--cloudfront-distribution-id "$cloudfront_distribution_id")
+        command+=(--cloudfront-invalidate=true)
+
+        if [[ -n "$analytics_url" ]]; then
+          command+=(--analytics-url "$analytics_url")
+        fi
+
+        echo "Running command: ${command[*]}" | tee -a "$GITHUB_STEP_SUMMARY"
+
+        "${command[@]}"
