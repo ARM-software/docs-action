@@ -25,7 +25,7 @@ jobs:
     name: Assert news files (See CONTRIBUTING.md)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - uses: actions/setup-python@v6
@@ -47,7 +47,7 @@ jobs:
     name: Assert package version pin file
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Check underlying tool package version file is set
         shell: bash
@@ -70,7 +70,7 @@ jobs:
     needs:
       - assert-package-version-pin-file
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Install arm-docs package
         run: |
@@ -97,7 +97,7 @@ jobs:
     name: Check action files exist
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Check validate action metadata exists
         run: test -f validate/action.yml
