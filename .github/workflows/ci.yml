@@ -104,3 +104,6 @@ jobs:
 
       - name: Check publish action metadata exists
         run: test -f publish/action.yml
+
+      - name: Check upload action metadata exists
+        run: test -f upload/action.yml

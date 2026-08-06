@@ -1,0 +1,54 @@
+#
+# Copyright (C) 2020-2026 Arm Limited or its affiliates and Contributors. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+name: docs-action-upload
+description: GitHub Action for uploading generated API reference documentation # TODO: change references to 'API reference'
+inputs:
+  source-dir:
+    description: Directory containing the generated static API reference site.
+    required: true
+  site-id:
+    description: Allocated path for the API reference site.
+    required: true
+  environment:
+    description: Deployment environment. Accepted values are `staging` and `production`.
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Upload API reference
+      shell: bash
+      env:
+        INPUT_SOURCE_DIR: ${{ inputs.source-dir }}
+        INPUT_SITE_ID: ${{ inputs.site-id }}
+        INPUT_ENVIRONMENT: ${{ inputs.environment }}
+      run: |
+        case "$INPUT_ENVIRONMENT" in
+          staging)
+            s3_bucket="arm-edge-ai-reference-staging-529607359382"
+            cloudfront_distribution_id="E1ZYKQODRYD5DM"
+            ;;
+
+          production)
+            s3_bucket="arm-edge-ai-reference-prod-930800959236"
+            cloudfront_distribution_id=""
+            ;;
+
+          *)
+            echo "::error::Unsupported environment '$INPUT_ENVIRONMENT'"
+            echo "::error::Expected one of: staging, production"
+            exit 1
+            ;;
+        esac
+
+        aws s3 sync \
+          "$INPUT_SOURCE_DIR" \
+          "s3://${s3_bucket}/${INPUT_SITE_ID}/" \
+          --delete \
+          --only-show-errors
+
+        aws cloudfront create-invalidation \
+          --distribution-id "$cloudfront_distribution_id" \
+          --paths "/${INPUT_SITE_ID}/*" \
+          --no-cli-pager

@@ -37,6 +37,25 @@ Publish a docs site:
     environment: staging
 ```
 
+Upload a generated API reference site:
+
+```yaml
+- name: AWS GitHub OIDC Login
+  uses: aws-actions/configure-aws-credentials@v4
+  with:
+    role-to-assume: arn:aws:iam::<account-id>:role/<role-name>
+    aws-region: eu-west-1
+
+- uses: ARM-Software/docs-action/upload@latest
+  with:
+    source-dir: docs/_build/html
+    site-id: product-guides
+    environment: staging
+```
+
+The upload action does not generate API reference documentation. The adopting
+repository selects and runs its own generator before invoking the action.
+
 ## Getting Started
 
 `arm-docs` expects a docs root containing Markdown or MDX content, plus optional `static/` assets and a `docs-config.json` file for site-level navigation and labelling.
@@ -87,6 +106,16 @@ If your repository is docs-only, `docs-root` can be `.` instead of `docs`.
 - `docs-root`: Docs root inside the repository.
 - `site-id`: Explicit site ID for the docs site.
 - `environment`: Deployment environment. Accepted values are `staging` and `production`.
+
+## Upload Inputs
+
+- `source-dir`: Directory containing the generated static API reference site.
+- `site-id`: Allocated path on the shared API reference site.
+- `environment`: Deployment environment. Accepted values are `staging` and `production`.
+
+The workflow must configure AWS credentials before invoking the upload action.
+The Terraform-managed role restricts the repository to its allocated S3 prefix
+and CloudFront distribution.
 
 ## Package Version
 
