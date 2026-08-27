@@ -52,7 +52,7 @@ runs:
         case "$INPUT_ENVIRONMENT" in
           staging)
             aws_region="eu-west-1"
-            site_url="https://docs.staging.devplatform.arm.com"
+            site_url="https://pre-prod.developer.arm.com/dev-docs"
             s3_bucket="arm-edge-ai-docs-staging-529607359382"
             cloudfront_distribution_id="E3668SHWG5R3NX"
             analytics_url="https://assets.adobedtm.com/268f09c22e73/c3400da3baca/launch-d106b1020c99-development.min.js"
@@ -60,7 +60,7 @@ runs:
 
           production)
             aws_region="eu-west-1"
-            site_url="https://docs.devplatform.arm.com"
+            site_url="https://developer.arm.com/dev-docs"
             s3_bucket="arm-edge-ai-docs-prod-930800959236"
             cloudfront_distribution_id="EA346A6MHUY68"
             analytics_url="https://assets.adobedtm.com/268f09c22e73/c3400da3baca/launch-d08a7f55e4e4.min.js"
