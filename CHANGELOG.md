@@ -2,6 +2,19 @@
 Copyright (C) 2026-2026 Arm Limited or its affiliates and Contributors. All rights reserved.
 SPDX-License-Identifier: Apache-2.0
 -->
+"0.3.1" (2026-08-27)
+====================
+
+Bugfixes
+--------
+
+- :bug: Ensure that correct version of `arm-docs-github-action` is used (#20260827150713)
+
+
+<!--
+Copyright (C) 2026-2026 Arm Limited or its affiliates and Contributors. All rights reserved.
+SPDX-License-Identifier: Apache-2.0
+-->
 "0.3.0" (2026-08-27)
 ====================
 
