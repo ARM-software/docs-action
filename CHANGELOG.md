@@ -2,6 +2,19 @@
 Copyright (C) 2026-2026 Arm Limited or its affiliates and Contributors. All rights reserved.
 SPDX-License-Identifier: Apache-2.0
 -->
+"0.3.0" (2026-08-27)
+====================
+
+Features
+--------
+
+- :fireworks: release docs to developer.arm.com domain (#20260827142202)
+
+
+<!--
+Copyright (C) 2026-2026 Arm Limited or its affiliates and Contributors. All rights reserved.
+SPDX-License-Identifier: Apache-2.0
+-->
 "0.2.0" (2026-07-24)
 ====================
 
