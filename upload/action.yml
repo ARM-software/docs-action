@@ -32,7 +32,7 @@ runs:
 
           production)
             s3_bucket="arm-edge-ai-reference-prod-930800959236"
-            cloudfront_distribution_id=""
+            cloudfront_distribution_id="E2QJ3DVOFIOHP4"
             ;;
 
           *)
