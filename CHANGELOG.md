@@ -2,6 +2,17 @@
 Copyright (C) 2026-2026 Arm Limited or its affiliates and Contributors. All rights reserved.
 SPDX-License-Identifier: Apache-2.0
 -->
+# 0.7.0 (2026-10-15)
+
+## Features
+
+- :camel: Bump underlying version of `arm-docs-github-action` to v0.10.1 (#20261015140432)
+
+
+<!--
+Copyright (C) 2026-2026 Arm Limited or its affiliates and Contributors. All rights reserved.
+SPDX-License-Identifier: Apache-2.0
+-->
 # 0.6.0 (2026-10-06)
 
 ## Features
